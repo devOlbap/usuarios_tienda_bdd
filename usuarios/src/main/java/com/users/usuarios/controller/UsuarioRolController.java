@@ -67,91 +67,84 @@ public class UsuarioRolController {
         return rol;
    }
 
-    //GET LISTOS
-
-    /*
-        traté de crear un DireccionRequest para recibir un JSON custom pero cuando queria recibir el id
-        de la direccion ... lo tomaba como 0 
-        Pero si le quito el cuerpo y envio el numero solo... lo toma bien lo 
-        tengo que convertirlo en Long para validar el dato
-    */
-    // @PostMapping("/{id_usuario}/direcciones/add")
-    // public ResponseEntity<?> postDireccionUsuario(@PathVariable Long id_usuario, @RequestBody int dir) {
+    @PostMapping("/{id_usuario}/roles/add")
+    public ResponseEntity<?> postRolUsuario(@PathVariable Long id_usuario, @RequestBody int rol) {
         
-    //     List<UsuarioDireccion> usuarioDirecciones = userDireccionService.getUsuarioDirecciones();
-    //     long maxId = Long.MIN_VALUE;
-    //     List<String> errores = new ArrayList<>();
+        List<UsuarioRol> usuarioRoles = userRolService.getUsuarioRoles();
+        long maxId = Long.MIN_VALUE;
+        List<String> errores = new ArrayList<>();
 
-    //     // int id_direccion = dir.getIdDireccion(); //DireccionRequest.method()
+        //int id_Rol = dir.getIdRol(); //RolRequest.method()
 
-    //     Long aux = Long.valueOf(dir);
+        Long aux = Long.valueOf(rol);
 
-    //     Direccion direccion_nueva = direccionService.getDireccionById(aux);
+        Rol rol_nueva = rolService.getRolById(aux);
 
-    //     Usuario user = userService.getUsuarioById(id_usuario);
+        Usuario user = userService.getUsuarioById(id_usuario);
 
-    //     if(user == null){
-    //         errores.add("Error al buscar usuario.");
-    //         return ResponseEntity.badRequest().body(errores);
-    //     }
-    //     if (direccion_nueva == null) {
-    //         //Si la dirección no existe, agregar un mensaje de error a la lista
-    //         errores.add("Error al obtener la dirección");
-    //         return ResponseEntity.badRequest().body(errores);
-    //     }
+        if(user == null){
+            errores.add("Error al buscar usuario.");
+            return ResponseEntity.badRequest().body(errores);
+        }
+        if (rol_nueva == null) {
+            //Si la dirección no existe, agregar un mensaje de error a la lista
+            errores.add("Error al obtener el Rol");
+            return ResponseEntity.badRequest().body(errores);
+        }
 
-    //     for (UsuarioDireccion usuarioDireccion : usuarioDirecciones) {
-    //         long id = usuarioDireccion.getId();
+        for (UsuarioRol usuarioRol : usuarioRoles) {
+            long id = usuarioRol.getId();
 
-    //         if (id > maxId) {
-    //             maxId = id;
-    //         }
-    //         if (usuarioDireccion.getUsuarioIdUsuario().equals(id_usuario) &&
-    //                 usuarioDireccion.getDireccionIdDireccion().equals(direccion_nueva.getId())) {
-    //             // Si entra aquí es porque ya existe el registro y debemos retornarlo
-    //             errores.add("Ya existe registro del usuario: "+id_usuario+" con la direccion: "+direccion_nueva.getCalle());
-    //             return ResponseEntity.status(409).body(errores);
-    //         }
-    //     }
+            if (id > maxId) {
+                maxId = id;
+            }
+            if (usuarioRol.getUsuarioIdUsuario().equals(id_usuario) &&
+                    usuarioRol.getRolIdRol().equals(rol_nueva.getId())) {
+                //Si entra aquí es porque ya existe el registro y debemos retornarlo
+                errores.add("Ya existe registro del usuario: "+user.getFullName()+" con el Rol: "+rol_nueva.getDescripcion());
+                return ResponseEntity.status(409).body(errores);
+            }
+        }
 
-    //     UsuarioDireccion userDireccion = new UsuarioDireccion();
+        UsuarioRol userRol = new UsuarioRol();
 
-    //     userDireccion.setId(maxId+1);
-    //     userDireccion.setUsuarioIdUsuario(id_usuario);
-    //     userDireccion.setDireccionIdDireccion(direccion_nueva.getId());
+        userRol.setId(maxId+1);
+        userRol.setUsuarioIdUsuario(id_usuario);
+        userRol.setRolIdRol(rol_nueva.getId());
 
-    //     userDireccionService.createUsuarioDireccion(userDireccion);
+        userRolService.createUsuarioRol(userRol);
 
-    //     return ResponseEntity.ok(direccion_nueva);
-    // }
+        return ResponseEntity.ok(rol_nueva);
+    }
 
-    // @DeleteMapping("/{id_usuario}/direcciones/{id_direccion}")
-    // public ResponseEntity<?> deleteDireccionUsuario(@PathVariable Long id_usuario,@PathVariable Long id_direccion) {
+    @DeleteMapping("/{id_usuario}/roles/{id_rol}")
+    public ResponseEntity<?> deleteDireccionUsuario(@PathVariable Long id_usuario,@PathVariable Long id_rol) {
         
-    //     List<UsuarioDireccion> usuarioDirecciones = userDireccionService.getUsuarioDirecciones();
-    //     List<String> errores = new ArrayList<>();
+        List<UsuarioRol> usuarioRoles = userRolService.getUsuarioRoles();
+        List<String> errores = new ArrayList<>();
 
-        
-    //     for (UsuarioDireccion usuarioDireccion : usuarioDirecciones) {
+        Usuario user = userService.getUsuarioById(id_usuario);
 
-    //         if (usuarioDireccion.getUsuarioIdUsuario().equals(id_usuario) &&
-    //                 usuarioDireccion.getDireccionIdDireccion().equals(id_direccion)) {
-    //             // Si entra aquí es porque ya existe el registro y debemos retornarlo
-    //             Long id_relacion = usuarioDireccion.getId();
+        for (UsuarioRol usuarioRol : usuarioRoles) {
 
-    //             Direccion direc = direccionService.getDireccionById(usuarioDireccion.getDireccionIdDireccion());
+            if (usuarioRol.getUsuarioIdUsuario().equals(id_usuario) &&
+                    usuarioRol.getRolIdRol().equals(id_rol)) {
+                //Si entra aquí es porque ya existe el registro y debemos retornarlo
+                Long id_relacion = usuarioRol.getId();
 
-
-    //             if(userDireccionService.deleteUsuarioDireccion(id_relacion)){
-    //                 errores.add("Direccion eliminada exitosamente con direccion: "+direc.getCalle());
-    //                 return ResponseEntity.ok().body(errores);
-    //             }
-    //             return ResponseEntity.status(409).body(errores);
-    //         }
-    //     }
+                Rol rol = rolService.getRolById(usuarioRol.getRolIdRol());
 
 
-    //     return ResponseEntity.badRequest().body(errores);
-    // }
+                if(userRolService.deleteUsuarioRol(id_relacion)){
+                    errores.add("Rol de usuario: "+user.getFullName()+". Eliminado exitosamente con Rol: "+rol.getDescripcion());
+                    return ResponseEntity.ok().body(errores);
+                }
+                return ResponseEntity.status(409).body(errores);
+            }
+        }
+
+
+        return ResponseEntity.badRequest().body(errores);
+    }
 
 }
