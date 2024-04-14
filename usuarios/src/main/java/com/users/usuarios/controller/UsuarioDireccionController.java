@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import com.users.usuarios.service.UsuarioDireccionService;
 import com.users.usuarios.service.UsuarioService;
@@ -19,13 +18,9 @@ import com.users.usuarios.service.DireccionService;
 import com.users.usuarios.model.UsuarioDireccion;
 import com.users.usuarios.model.Direccion;
 import com.users.usuarios.model.Usuario;
-import com.users.usuarios.model.DireccionRequest;
-
 
 import java.util.List;
-import java.util.Optional;
 import java.util.ArrayList;
-
 
 
 @RestController
