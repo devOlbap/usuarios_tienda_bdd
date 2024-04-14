@@ -42,6 +42,7 @@ public class UsuarioRolController {
     public ResponseEntity<List<Rol>> getRolesByUser(@PathVariable Long id_usuario){
         List<UsuarioRol> usuarioRoles = userRolService.getUsuarioRoles();
         List<Rol> roles = new ArrayList<>();
+        
         for (UsuarioRol usuarioRol : usuarioRoles) {
             if(id_usuario == usuarioRol.getUsuarioIdUsuario()){
                 Rol rol = rolService.getRolById(usuarioRol.getRolIdRol());

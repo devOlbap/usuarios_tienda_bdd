@@ -26,6 +26,10 @@ public class UsuarioRol {
         name= "rol_id_rol"
     )
     private Long rol_id_rol;
+
+    public UsuarioRol(){
+
+    };
     
     public UsuarioRol(Long id, Long usuario_id_usuario, Long rol_id_rol) {
         this.id = id;
