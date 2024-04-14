@@ -5,6 +5,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 
+import java.util.List;
+import java.util.ArrayList;
+
 @Entity
 @Table(name="rol")
 public class Rol {
@@ -60,4 +63,19 @@ public class Rol {
     public void setEstado(char estado) {
         this.estado = estado;
     }
+
+    public List<String> validarCampos() {
+        List<String> mensajes = new ArrayList<>();
+    
+        if (!validarDescripcion()) {
+            mensajes.add("La descripcion debe tener entre 5 y 255 caracteres.");
+        }
+
+        return mensajes;
+    }
+
+    private boolean validarDescripcion() {
+        return descripcion != null && descripcion.length() >= 5 && descripcion.length() <= 255;
+    }
+    
 }
