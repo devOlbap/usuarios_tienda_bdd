@@ -70,7 +70,7 @@ public class UsuarioController {
             mensajes.add("Bienvenido! Acceso correcto");
             return ResponseEntity.ok(mensajes);
         }
-        
+        mensajes.add("Contraseña incorrecta.");
         // Si hay mensajes, devolver una respuesta con código de error 400 (BadRequest) y la lista de mensajes
         return ResponseEntity.badRequest().body(mensajes);
     }
