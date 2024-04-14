@@ -36,10 +36,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario createUsuario(Usuario usuario){
 
-        // Long nuevoId = generarNuevoId();
-
-        // usuario.setId(nuevoId);
-
         return userRepository.save(usuario);
     }
     @Override
