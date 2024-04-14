@@ -71,22 +71,45 @@ public class UsuarioDireccionController {
 
     //GET LISTOS
 
-    // @PostMapping("/{id_usuario}/direcciones/add")
-    // public ResponseEntity<?> postDireccionUsuario(@PathVariable Long id_usuario, @RequestBody UsuarioDireccion userDireccion) {
-        
-    //     Direccion direccion_nueva = direccionService.getDireccionById(userDireccion.getDireccionIdDireccion());
+    @PostMapping("/{id_usuario}/direcciones/add")
+    public ResponseEntity<?> postDireccionUsuario(@PathVariable Long id_usuario, @RequestBody Long id_direccion) {
+        List<UsuarioDireccion> usuarioDirecciones = userDireccionService.getUsuarioDirecciones();
+        long maxId = Long.MIN_VALUE;
 
-    //     if (direccion_nueva == null) {
-    //         // Si la dirección no existe, agregar un mensaje de error a la lista
-    //         List<String> errores = new ArrayList<>();
-    //         errores.add("Error al obtener la dirección");
-    //         return ResponseEntity.badRequest().body(errores);
-    //     }
+        for (UsuarioDireccion usuarioDireccion : usuarioDirecciones) {
+            long id = usuarioDireccion.getId();
 
-    //     userDireccionService.createUsuarioDireccion(userDireccion);
+            if (id > maxId) {
+                maxId = id;
+            }
+            if (id_usuario == usuarioDireccion.getUsuarioIdUsuario() &&
+                    id_direccion== usuarioDireccion.getDireccionIdDireccion()) {
+                // Si entra aquí es porque ya existe el registro y debemos retornarlo
+                return ResponseEntity.status(409).body(usuarioDireccion);
+            }
+        }
 
-    //     return ResponseEntity.ok(direccion_nueva);
-    // }
+        Direccion direccion_nueva = new Direccion();
+
+        direccion_nueva = direccionService.getDireccionById(id_direccion);
+
+        if (direccion_nueva == null) {
+            //Si la dirección no existe, agregar un mensaje de error a la lista
+            List<String> errores = new ArrayList<>();
+            errores.add("Error al obtener la dirección");
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        UsuarioDireccion userDireccion = new UsuarioDireccion();
+
+        userDireccion.setId(maxId+1);
+        userDireccion.setUsuarioIdUsuario(id_usuario);
+        userDireccion.setDireccionIdDireccion(direccion_nueva.getId());
+
+        userDireccionService.createUsuarioDireccion(userDireccion);
+
+        return ResponseEntity.ok(direccion_nueva);
+    }
 
 
 }
