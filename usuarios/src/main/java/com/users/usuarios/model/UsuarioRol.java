@@ -2,8 +2,6 @@ package com.users.usuarios.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 
@@ -11,7 +9,7 @@ import jakarta.persistence.Id;
 @Table(name="usuario_rol")
 public class UsuarioRol {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
         nullable = false,
         name= "id_usuario_rol"
