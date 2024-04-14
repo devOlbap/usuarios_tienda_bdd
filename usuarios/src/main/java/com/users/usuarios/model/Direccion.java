@@ -16,7 +16,7 @@ import jakarta.persistence.Id;
 @Table(name="direccion")
 public class Direccion {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
         nullable = false,
         name= "id_direccion"
