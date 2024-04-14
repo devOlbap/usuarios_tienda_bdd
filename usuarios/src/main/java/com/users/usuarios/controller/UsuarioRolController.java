@@ -42,7 +42,7 @@ public class UsuarioRolController {
     public ResponseEntity<List<Rol>> getRolesByUser(@PathVariable Long id_usuario){
         List<UsuarioRol> usuarioRoles = userRolService.getUsuarioRoles();
         List<Rol> roles = new ArrayList<>();
-        
+
         for (UsuarioRol usuarioRol : usuarioRoles) {
             if(id_usuario == usuarioRol.getUsuarioIdUsuario()){
                 Rol rol = rolService.getRolById(usuarioRol.getRolIdRol());
@@ -53,20 +53,19 @@ public class UsuarioRolController {
         return ResponseEntity.ok(roles);
     }
 
-    // @GetMapping("/{id_usuario}/direcciones/{id_direccion}")
-    // public Direccion getDireccionUserById(@PathVariable Long id_usuario,@PathVariable Long id_direccion ) {
-    //     List<UsuarioDireccion> usuarioDirecciones = userDireccionService.getUsuarioDirecciones();
-    //     Direccion direccion = new Direccion();
+    @GetMapping("/{id_usuario}/roles/{id_rol}")
+    public Rol getRolUserById(@PathVariable Long id_usuario,@PathVariable Long id_rol ) {
+        List<UsuarioRol> usuarioRoles = userRolService.getUsuarioRoles();
+        Rol rol = new Rol();
 
-    //     for (UsuarioDireccion usuarioDireccion : usuarioDirecciones) {
-    //         if(id_usuario == usuarioDireccion.getUsuarioIdUsuario() && id_direccion == usuarioDireccion.getDireccionIdDireccion()){
-    //             direccion = direccionService.getDireccionById(id_direccion);
-    //         }
-    //     }
+        for (UsuarioRol usuarioRol : usuarioRoles) {
+            if(id_usuario == usuarioRol.getUsuarioIdUsuario() && id_rol == usuarioRol.getRolIdRol()){
+                rol = rolService.getRolById(id_rol);
+            }
+        }
 
-    //     return direccion;
-
-    // }
+        return rol;
+   }
 
     //GET LISTOS
 
