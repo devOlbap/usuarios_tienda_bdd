@@ -4,6 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+
+
+import java.util.List;
+import java.util.ArrayList;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 
@@ -74,4 +79,28 @@ public class Direccion {
     public void setEstado(char estado) {
         this.estado = estado;
     }
+
+
+    public List<String> validarCampos() {
+        List<String> mensajes = new ArrayList<>();
+    
+        if (!validarCalle()) {
+            mensajes.add("La calle debe tener entre 5 y 255 caracteres.");
+        }
+        if (!validarNumeracion()) {
+            mensajes.add("La numeración debe tener entre 2 y 255 caracteres.");
+        }
+    
+        return mensajes;
+    }
+
+    private boolean validarCalle() {
+        return calle != null && calle.length() >= 5 && calle.length() <= 255;
+    }
+    
+    private boolean validarNumeracion() {
+        return numeracion != null && numeracion.length() >= 2 && numeracion.length() <= 255;
+    }
+ 
+
 }
