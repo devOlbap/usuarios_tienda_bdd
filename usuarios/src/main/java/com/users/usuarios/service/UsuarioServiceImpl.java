@@ -23,8 +23,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Optional<Usuario> getUsuarioById(Long id){
-        return userRepository.findById(id);
+    public Usuario getUsuarioById(Long id){
+        Optional<Usuario> usrOpt = userRepository.findById(id);
+        // Verificar si la dirección existe en la base de datos
+        if (usrOpt.isPresent()) {
+            return usrOpt.get(); // Devolver la dirección si existe
+        } else {
+            // Manejar el caso en el que la dirección no existe (por ejemplo, lanzar una excepción o devolver null)
+            return null; // En este ejemplo, se devuelve null si la dirección no se encuentra
+        }
     }
     @Override
     public Usuario createUsuario(Usuario usuario){

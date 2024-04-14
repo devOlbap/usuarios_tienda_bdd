@@ -13,15 +13,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.users.usuarios.service.UsuarioDireccionService;
+import com.users.usuarios.service.UsuarioService;
 import com.users.usuarios.service.DireccionService;
 
 import com.users.usuarios.model.UsuarioDireccion;
 import com.users.usuarios.model.Direccion;
+import com.users.usuarios.model.Usuario;
+import com.users.usuarios.model.DireccionRequest;
+
+
 
 // import java.util.HashMap;
 // import java.util.Map;
 
 import java.util.List;
+import java.util.Optional;
 // import java.lang.reflect.Array;
 import java.util.ArrayList;
 // import java.util.Optional;
@@ -36,6 +42,10 @@ public class UsuarioDireccionController {
 
     @Autowired
     private DireccionService direccionService;
+
+
+    @Autowired
+    private UsuarioService userService;
 
     @GetMapping("/{id_usuario}/direcciones")
     public ResponseEntity<List<Direccion>> getDireccionesByUser(@PathVariable Long id_usuario){
@@ -71,10 +81,36 @@ public class UsuarioDireccionController {
 
     //GET LISTOS
 
+    /*
+        traté de crear un DireccionRequest para recibir un JSON custom pero cuando queria recibir el id
+        de la direccion ... lo tomaba como 0 
+        Pero si le quito el cuerpo y envio el numero solo... lo toma bien lo 
+        tengo que convertirlo en Long para validar el dato
+    */
     @PostMapping("/{id_usuario}/direcciones/add")
-    public ResponseEntity<?> postDireccionUsuario(@PathVariable Long id_usuario, @RequestBody Long id_direccion) {
+    public ResponseEntity<?> postDireccionUsuario(@PathVariable Long id_usuario, @RequestBody int dir) {
+        
         List<UsuarioDireccion> usuarioDirecciones = userDireccionService.getUsuarioDirecciones();
         long maxId = Long.MIN_VALUE;
+        List<String> errores = new ArrayList<>();
+
+        // int id_direccion = dir.getIdDireccion(); //DireccionRequest.method()
+
+        Long aux = Long.valueOf(dir);
+
+        Direccion direccion_nueva = direccionService.getDireccionById(aux);
+
+        Usuario user = userService.getUsuarioById(id_usuario);
+
+        if(user == null){
+            errores.add("Error al buscar usuario.");
+            return ResponseEntity.badRequest().body(errores);
+        }
+        if (direccion_nueva == null) {
+            //Si la dirección no existe, agregar un mensaje de error a la lista
+            errores.add("Error al obtener la dirección");
+            return ResponseEntity.badRequest().body(errores);
+        }
 
         for (UsuarioDireccion usuarioDireccion : usuarioDirecciones) {
             long id = usuarioDireccion.getId();
@@ -82,22 +118,12 @@ public class UsuarioDireccionController {
             if (id > maxId) {
                 maxId = id;
             }
-            if (id_usuario == usuarioDireccion.getUsuarioIdUsuario() &&
-                    id_direccion== usuarioDireccion.getDireccionIdDireccion()) {
+            if (usuarioDireccion.getUsuarioIdUsuario().equals(id_usuario) &&
+                    usuarioDireccion.getDireccionIdDireccion().equals(direccion_nueva.getId())) {
                 // Si entra aquí es porque ya existe el registro y debemos retornarlo
-                return ResponseEntity.status(409).body(usuarioDireccion);
+                errores.add("Ya existe registro del usuario: "+id_usuario+" con la direccion: "+direccion_nueva.getCalle());
+                return ResponseEntity.status(409).body(errores);
             }
-        }
-
-        Direccion direccion_nueva = new Direccion();
-
-        direccion_nueva = direccionService.getDireccionById(id_direccion);
-
-        if (direccion_nueva == null) {
-            //Si la dirección no existe, agregar un mensaje de error a la lista
-            List<String> errores = new ArrayList<>();
-            errores.add("Error al obtener la dirección");
-            return ResponseEntity.badRequest().body(errores);
         }
 
         UsuarioDireccion userDireccion = new UsuarioDireccion();
