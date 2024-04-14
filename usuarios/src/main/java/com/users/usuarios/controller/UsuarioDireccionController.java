@@ -4,13 +4,13 @@ package com.users.usuarios.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.users.usuarios.service.UsuarioDireccionService;
 import com.users.usuarios.service.UsuarioService;
@@ -22,15 +22,10 @@ import com.users.usuarios.model.Usuario;
 import com.users.usuarios.model.DireccionRequest;
 
 
-
-// import java.util.HashMap;
-// import java.util.Map;
-
 import java.util.List;
 import java.util.Optional;
-// import java.lang.reflect.Array;
 import java.util.ArrayList;
-// import java.util.Optional;
+
 
 
 @RestController
@@ -137,5 +132,33 @@ public class UsuarioDireccionController {
         return ResponseEntity.ok(direccion_nueva);
     }
 
+    @DeleteMapping("/{id_usuario}/direcciones/{id_direccion}")
+    public ResponseEntity<?> deleteDireccionUsuario(@PathVariable Long id_usuario,@PathVariable Long id_direccion) {
+        
+        List<UsuarioDireccion> usuarioDirecciones = userDireccionService.getUsuarioDirecciones();
+        List<String> errores = new ArrayList<>();
+
+        
+        for (UsuarioDireccion usuarioDireccion : usuarioDirecciones) {
+
+            if (usuarioDireccion.getUsuarioIdUsuario().equals(id_usuario) &&
+                    usuarioDireccion.getDireccionIdDireccion().equals(id_direccion)) {
+                // Si entra aquí es porque ya existe el registro y debemos retornarlo
+                Long id_relacion = usuarioDireccion.getId();
+
+                Direccion direc = direccionService.getDireccionById(usuarioDireccion.getDireccionIdDireccion());
+
+
+                if(userDireccionService.deleteUsuarioDireccion(id_relacion)){
+                    errores.add("Direccion eliminada exitosamente con direccion: "+direc.getCalle());
+                    return ResponseEntity.ok().body(errores);
+                }
+                return ResponseEntity.status(409).body(errores);
+            }
+        }
+
+
+        return ResponseEntity.badRequest().body(errores);
+    }
 
 }
