@@ -23,16 +23,16 @@ public class RolServiceImpl implements RolService {
     }
 
     @Override
-    public Optional<Rol> getRolById(Long id){
-        return rolRepository.findById(id);
+    public Rol getRolById(Long id){
+        Optional<Rol> rolOP = rolRepository.findById(id);
+        if (rolOP.isPresent()) {
+            return rolOP.get(); 
+        } else {
+            return null; 
+        }
     }
     @Override
     public Rol createRol(Rol rol){
-
-        // Long nuevoId = generarNuevoId();
-
-        // usuario.setId(nuevoId);
-
         return rolRepository.save(rol);
     }
     @Override
