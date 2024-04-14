@@ -52,6 +52,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         return null;
     }
     @Override
+    public Usuario getUsuarioByUsername(String username){
+        Optional<Usuario> usrOpt = Optional.ofNullable(userRepository.findByUsername(username));
+
+        if (usrOpt.isPresent()) {
+            return usrOpt.get(); 
+        } else {
+            return null; 
+        }
+    }
+    @Override
     public Boolean deleteUsuario(Long id){
         if(userRepository.existsById(id)){
             userRepository.deleteById(id);
