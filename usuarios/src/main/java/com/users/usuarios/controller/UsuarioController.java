@@ -41,12 +41,18 @@ public class UsuarioController {
     public ResponseEntity<?> createUser(@RequestBody Usuario usuario) {
         //Lista de errores en validaciones
         List<String> errores = usuario.validarCampos();
-        // Si no hay errores, llamar al método del servicio para crear
+
+        Usuario user = usuarioService.getUsuarioByUsername(usuario.getUsername());
+
+        if(user!=null){
+            errores.add("Ya existe un usuario con el nombre de usuario:"+user.getUsername());
+            return ResponseEntity.badRequest().body(errores);
+        }
+
         if (errores.isEmpty()) {
             return ResponseEntity.ok(usuarioService.createUsuario(usuario));
         }
-        
-        // Si hay errores, devolver una respuesta con código de error 400 (BadRequest) y la lista de errores
+
         return ResponseEntity.badRequest().body(errores);
     }
     @PostMapping("/login")
