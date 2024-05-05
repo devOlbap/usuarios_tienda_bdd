@@ -1,0 +1,4 @@
+com\users\usuarios\service\DireccionServiceTest.class
+com\users\usuarios\UsuariosApplicationTests.class
+com\users\usuarios\service\UsuarioServiceTest.class
+com\users\usuarios\repository\UserRepositoryTest.class
